@@ -1,0 +1,36 @@
+{
+  "name": "context",
+  "version": "1.0.0",
+  "description": "context implemented with nodejs",
+  "main": "context.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lubanproj/context.git"
+  },
+  "keywords": [
+    "context",
+    "node",
+    "nodejs",
+    "event",
+    "events",
+    "io",
+    "web",
+    "javascript",
+    "js",
+    "typescript",
+    "ts",
+    "http"
+  ],
+  "author": "lubanproj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lubanproj/context/issues"
+  },
+  "homepage": "https://github.com/lubanproj/context#readme",
+  "dependencies": {
+    "events": "^3.2.0"
+  }
+}

@@ -1,3 +1,5 @@
+import * as events from 'events'
+
 // Context is the context of the thread,
 // we can manage the life cycle of  context data of the thread through Context
 interface Context {
@@ -56,7 +58,7 @@ class valueContext implements Context {
         return {Date: undefined, boolean: undefined};
     }
 
-    Done(): Function {
+    Done(): events.EventEmitter {
         return undefined;
     }
 
@@ -96,7 +98,78 @@ function SetValue(context : valueContext, key : string, value : any) {
     context.data.set(key, value)
 }
 
+interface Canceler {
+    cancel(removeFromParent : boolean, err : Error);
+    Done() : events.EventEmitter;
+}
 
+var cancelCtxKey : number
+
+class cancelContext implements Context {
+
+    parent : cancelContext;
+    children : cancelContext[];
+    done : Event;
+    err : Error;
+
+    Deadline(): { Date; boolean } {
+        return {Date: undefined, boolean: undefined};
+    }
+
+    Done(): events.EventEmitter {
+        return this.done
+    }
+
+    Err(): Error {
+        return this.err;
+    }
+
+    Value(key: any): any {
+        if (key == cancelCtxKey) {
+            return this
+        }
+        return this.parent.Value(key)
+    }
+
+}
+
+function cancel(cancelCtx : cancelContext, err : Error) {
+    if (cancelCtx == undefined) {
+        return new Error("cancelCtx is undefined");
+    }
+
+    if (err == undefined) {
+        return new Error("err is undefined");
+    }
+    cancelCtx.err = err
+
+    // remove children first
+    cancelCtx.children.forEach((child, index) => {
+        cancel(child, err)
+    });
+
+    cancelCtx.children = undefined
+
+    removeChild(cancelCtx.parent, cancelCtx)
+}
+
+function removeChild(parent : cancelContext, self : cancelContext) : Error {
+    if (parent == undefined) {
+        return new Error("parent is undefined")
+    }
+    parent.children.forEach((child, index) => {
+        if (child == self) {
+            delete(parent.children[index])
+        }
+    })
+}
+
+
+
+// WithTimeout return a Context that carries a timer
+function WithTimeout(parent : Context, timer : Date) : Context {
+    return undefined
+}
 
 
 
