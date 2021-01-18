@@ -83,7 +83,7 @@ class CancelContext implements Context {
     err : Error;
 
 
-    IsDead(): boolean {
+    Done(): boolean {
         return this.done;
     }
 
